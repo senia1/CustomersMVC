@@ -22,4 +22,17 @@ public class CustomerRepository : ICustomerRepository
     {
         return await _dbContext.Customers.ToListAsync();
     }
+
+    public async Task<Customer> AddCustomerAsync(Customer customer)
+    {
+        if (customer == null)
+        {
+            throw new ArgumentNullException(nameof(customer));
+        }
+
+        var result = await _dbContext.AddAsync(customer);
+        await _dbContext.SaveChangesAsync();
+
+        return result.Entity;
+    }
 }
