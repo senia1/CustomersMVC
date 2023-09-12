@@ -2,7 +2,6 @@
 using DataAccessLayer.Entities;
 using Microsoft.AspNetCore.Mvc;
 
-
 namespace CustomersMVC.Controllers;
 
 public class CustomerController : Controller
@@ -19,38 +18,70 @@ public class CustomerController : Controller
         return View(customers);
     }
 
-    public async Task<IActionResult> Create()
+    public IActionResult Create()
     {
         return View();
     }
 
-    [HttpPost] // атрибут, указывающий, что этот метод обрабатывает POST-запросы
-    public async Task<IActionResult> Create(Customer customer) // метод, принимающий объект customer в качестве параметра
+    [HttpPost]
+    public async Task<IActionResult> Create(Customer customer)
     {
-        if (ModelState.IsValid) // проверка, что модель customer прошла валидацию
+        if (ModelState.IsValid) 
         {
-            await _customerService.AddCustomerAsync(customer); // вызов сервиса для создания нового покупателя в базе данных
-            return RedirectToAction(nameof(Index)); // перенаправление на метод Index для отображения списка покупателей
+            await _customerService.AddCustomerAsync(customer); 
+            return RedirectToAction(nameof(Index)); 
         }
-        return View(customer); // если модель не прошла валидацию, возвращаем представление с ошибками
+        return View(customer); 
     }
 
-    ////POST
-    //[HttpPost]
-    //[ValidateAntiForgeryToken]
-    //public IActionResult Create(Product obj)
-    //{
-    //    if (obj.Name == obj.DisplayOrder.ToString())
-    //    {
-    //        ModelState.AddModelError("name", "The DisplayOrder cannot exactly match the Name.");
-    //    }
-    //    if (ModelState.IsValid)
-    //    {
-    //        _db.Products.Add(obj);
-    //        _db.SaveChanges();
-    //        TempData["success"] = "Product created successfully";
-    //        return RedirectToAction("Index");
-    //    }
-    //    return View(obj);
-    //}
+    //GET
+    public async Task<IActionResult> Edit(int? id)
+    {
+        if (id == null || id == 0)
+        {
+            return NotFound();
+        }
+        var customerFromDb = await _customerService.GetCustomerByIdAsync(id.Value); // передаем параметр id
+
+        if (customerFromDb == null)
+        {
+            return NotFound();
+        }
+
+        return View(customerFromDb);
+    }
+
+    //POST
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(int id, Customer obj)
+    {
+        if (id == null || obj == null)
+        {
+            return NotFound();
+        }
+
+        if (id != obj.Id)
+        {
+            return BadRequest();
+        }
+
+        var customerFromDb = await _customerService.GetCustomerByIdAsync(id);
+        if (customerFromDb == null)
+        {
+            return NotFound();
+        }
+
+        if (ModelState.IsValid)
+        {
+            _customerService.UpdateCustomerAsync(obj);
+
+            TempData["success"] = "Customer updated successfully";
+            return RedirectToAction("Index");
+        }
+
+        return View(obj);
+    }
+
 }

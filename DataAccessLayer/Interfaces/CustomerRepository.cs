@@ -35,4 +35,56 @@ public class CustomerRepository : ICustomerRepository
 
         return result.Entity;
     }
+
+    public async Task<Customer> GetCustomerByIdAsync(int id)
+    {
+        if (id < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(id));
+        }
+
+        var result = await _dbContext.Customers.FindAsync(id);
+
+        if (result == null)
+        {
+            return null;
+            // throw new KeyNotFoundException($"Покупатель с идентификатором {id} не найден");
+        }
+
+        return result;
+    }
+
+    public async Task UpdateCustomerAsync(Customer customer)
+    {
+        if (customer == null)
+        {
+            throw new ArgumentNullException(nameof(customer));
+        }
+
+        var customerFromDb = await _dbContext.Customers.FindAsync(customer.Id);
+        if (customerFromDb == null)
+        {
+            throw new KeyNotFoundException($"Покупатель с идентификатором {customer.Id} не найден");
+        }
+
+        _dbContext.Customers.Update(customerFromDb);
+        await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task DeleteCustomerAsync(int id)
+    {
+        if (id < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(id));
+        }
+
+        var customerFromDb = await _dbContext.Customers.FindAsync(id);
+        if (customerFromDb == null)
+        {
+            throw new KeyNotFoundException($"Покупатель с идентификатором {id} не найден");
+        }
+
+        _dbContext.Customers.Remove(customerFromDb);
+        await _dbContext.SaveChangesAsync();
+    }
 }
