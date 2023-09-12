@@ -48,7 +48,6 @@ namespace BusinessLogicLayer
 
             return result;
         }
-
         public async Task UpdateCustomerAsync(Customer customer)
         {
             if (customer == null)
@@ -59,7 +58,7 @@ namespace BusinessLogicLayer
             var customerFromDb = await _customerRepository.GetCustomerByIdAsync(customer.Id);
             if (customerFromDb == null)
             {
-                throw new KeyNotFoundException($"Покупатель с идентификатором {customer.Id} не найден");
+                throw new KeyNotFoundException(@$"Покупатель с идентификатором {customer.Id} не найден");
             }
 
             await _customerRepository.UpdateCustomerAsync(customer);

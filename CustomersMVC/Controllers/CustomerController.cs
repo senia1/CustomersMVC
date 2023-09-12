@@ -33,55 +33,90 @@ public class CustomerController : Controller
         }
         return View(customer); 
     }
-
-    //GET
+    // GET
     public async Task<IActionResult> Edit(int? id)
     {
-        if (id == null || id == 0)
-        {
-            return NotFound();
-        }
-        var customerFromDb = await _customerService.GetCustomerByIdAsync(id.Value); // передаем параметр id
-
-        if (customerFromDb == null)
+        if (id == null)
         {
             return NotFound();
         }
 
-        return View(customerFromDb);
+        try
+        {
+            var customer = await _customerService.GetCustomerByIdAsync(id.Value);
+            return View(customer);
+        }
+        catch (Exception ex)
+        {
+            return View("Error", ex.Message);
+        }
     }
 
-    //POST
-
+    // POST
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, Customer obj)
+    public async Task<IActionResult> Edit(int id, Customer customer)
     {
-        if (id == null || obj == null)
-        {
-            return NotFound();
-        }
-
-        if (id != obj.Id)
+        if (id != customer.Id)
         {
             return BadRequest();
         }
 
-        var customerFromDb = await _customerService.GetCustomerByIdAsync(id);
-        if (customerFromDb == null)
+        try
+        {
+            if (ModelState.IsValid)
+            {
+                await _customerService.UpdateCustomerAsync(customer);
+                TempData["success"] = "Customer updated successfully";
+                return RedirectToAction(nameof(Index));
+            }
+            return View(customer);
+        }
+        catch (Exception ex)
+        {
+            return View("Error", ex.Message);
+        }
+    }
+
+    // GET
+    public async Task<IActionResult> Delete(int? id)
+    {
+        if (id == null)
         {
             return NotFound();
         }
 
-        if (ModelState.IsValid)
+        try
         {
-            _customerService.UpdateCustomerAsync(obj);
-
-            TempData["success"] = "Customer updated successfully";
-            return RedirectToAction("Index");
+            var customer = await _customerService.GetCustomerByIdAsync(id.Value);
+            return View(customer);
         }
-
-        return View(obj);
+        catch (Exception ex)
+        {
+            return View("Error", ex.Message);
+        }
     }
 
+    // POST
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Delete(int id, Customer customer)
+    {
+        if (id != customer.Id)
+        {
+            return BadRequest();
+        }
+
+        try
+        {
+            await _customerService.DeleteCustomerAsync(id);
+            TempData["success"] = "Customer deleted successfully";
+            return RedirectToAction(nameof(Index));
+
+        }
+        catch (Exception ex)
+        {
+            return View("Error", ex.Message);
+        }
+    }
 }
