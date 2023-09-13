@@ -53,7 +53,6 @@ public class CustomerRepository : ICustomerRepository
 
         return result;
     }
-
     public async Task UpdateCustomerAsync(Customer customer)
     {
         if (customer == null)
@@ -67,7 +66,9 @@ public class CustomerRepository : ICustomerRepository
             throw new KeyNotFoundException($"Покупатель с идентификатором {customer.Id} не найден");
         }
 
-        _dbContext.Customers.Update(customerFromDb);
+        // Копирование свойств из customer в customerFromDb
+        _dbContext.Entry(customerFromDb).CurrentValues.SetValues(customer);
+
         await _dbContext.SaveChangesAsync();
     }
 
