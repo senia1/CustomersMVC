@@ -1,0 +1,38 @@
+﻿@model DataAccessLayer.Entities.Transactions
+
+<form method="post" asp-action="Delete">
+    <div class="border p-3 mt-4">
+        <div class="row pb-2">
+            <h2 class="text-danger">Delete Transaction</h2>
+            <hr />
+        </div>
+        @*<div asp-validation-summary="All"></div>*@
+        <div class="mb-3">
+            <label asp-for="CustomerId"></label>
+            <input asp-for="CustomerId" class="form-control" readonly />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Amount"></label>
+            <input asp-for="Amount" class="form-control" readonly />
+        </div>
+        <div class="mb-3">
+            <label asp-for="TransactionType"></label>
+            <input asp-for="TransactionType" class="form-control" readonly />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Date"></label>
+            <input asp-for="Date" class="form-control" readonly />
+        </div>
+        <p>Вы уверены, что хотите удалить эту транзакцию?</p>
+        <button type="submit" class="btn btn-danger" style="width:150px">Delete</button>
+        <a asp-controller="Transaction" asp-action="Index" class="btn btn-secondary" style="width:150px">
+            Back to List
+        </a>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

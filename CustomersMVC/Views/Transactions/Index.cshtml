@@ -1,0 +1,72 @@
+﻿@model IEnumerable<DataAccessLayer.Entities.Transactions>
+
+@{
+    ViewData["Title"] = "Transaction List";
+}
+
+@if (TempData["success"] != null)
+{
+    <h2>@TempData["success"]</h2>
+}
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-primary">Transaction List</h2>
+        </div>
+        <div class="col-6 text-end">
+            <a asp-controller="Transaction" asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle-fill"></i> &nbsp; Create New Transaction
+            </a>
+        </div>
+    </div>
+    <br />
+    <table class="table table-bordered table-striped" style="width:100%">
+        <thead>
+            <tr>
+                <th>
+                    Customer ID
+                </th>
+                <th>
+                    Amount
+                </th>
+                <th>
+                    Transaction Type
+                </th>
+                <th>
+                    Date
+                </th>
+                <th>
+                    Actions
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var transaction in Model)
+            {
+                <tr>
+                    <td width="20%">
+                        @transaction.CustomerId
+                    </td>
+                    <td width="20%">
+                        @transaction.Amount
+                    </td>
+                    <td width="20%">
+                        @transaction.TransactionType
+                    </td>
+                    <td width="20%">
+                        @transaction.Date.ToString("yyyy-MM-dd")
+                    </td>
+                    <td>
+                        <div class="w-75 btn-group" role="group">
+                            <a asp-controller="Transaction" asp-action="Edit" asp-route-id="@transaction.Id"
+                               class="btn btn-primary mx-2"><i class="bi bi-pencil-square"></i>Edit</a>
+                            <a asp-controller="Transaction" asp-action="Delete" asp-route-id="@transaction.Id"
+                               class="btn btn-danger mx-2"><i class="bi bi-trash3-fill"></i>Delete</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

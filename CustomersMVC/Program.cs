@@ -13,6 +13,8 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectio
 
 builder.Services.AddTransient<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddTransient<ITransactionsRepository, TransactionsRepository>();
+builder.Services.AddScoped<ITransactionsService, TransactionsService>();
 
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 
