@@ -9,4 +9,4 @@
 5. EntityFramework: Migrations, Configurations
    Optionally: Frontend
 
-![Preview](./images/screen_app.png) <!-- скриншот -->
+![Preview](./Images/screen_app.png) <!-- скриншот -->
